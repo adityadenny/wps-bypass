@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WPS Link Bypass — Buka File Tanpa Install WPS</title>
+<meta name="description" content="Paste link share WPS yang minta install aplikasi, dapatkan link langsung yang bisa dibuka di browser mana saja.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f172a;--card:#1e293b;--border:#334155;--primary:#6366f1;--primary-h:#818cf8;--text:#e2e8f0;--muted:#94a3b8;--green:#22c55e;--red:#ef4444}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem}
+.container{max-width:640px;width:100%}
+h1{font-size:1.6rem;text-align:center;margin-bottom:.5rem}
+.tagline{text-align:center;color:var(--muted);margin-bottom:2rem;font-size:.9rem;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+label{display:block;font-weight:600;margin-bottom:.5rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.75rem;font-size:.9rem;font-family:monospace;resize:vertical;min-height:100px}
+textarea:focus{outline:none;border-color:var(--primary)}
+.btn{background:var(--primary);color:#fff;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s;width:100%;margin-top:.75rem}
+.btn:hover{background:var(--primary-h)}
+.error{color:var(--red);font-size:.85rem;margin-top:.5rem;display:none}
+.result{display:none;margin-top:1.5rem}
+.result.show{display:block}
+.link-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.link-card h3{font-size:.9rem;margin-bottom:.3rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.badge{font-size:.7rem;padding:.15rem .5rem;border-radius:9999px;font-weight:600}
+.badge-ok{background:#16532d;color:var(--green)}
+.fname{color:var(--green);font-family:monospace;font-size:.8rem;word-break:break-all}
+.link-row{display:flex;gap:.5rem;margin-top:.5rem;align-items:center}
+.link-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--green);padding:.5rem .6rem;font-size:.8rem;font-family:monospace;overflow:hidden;text-overflow:ellipsis}
+.copy-btn{background:var(--border);color:var(--text);border:none;padding:.5rem .75rem;border-radius:6px;cursor:pointer;font-size:.8rem;white-space:nowrap;transition:.15s}
+.copy-btn:hover{background:var(--primary)}
+.copy-btn.done{background:var(--green);color:#fff}
+.actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
+.act-btn{background:var(--primary);color:#fff;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:500;transition:.15s;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.act-btn:hover{background:var(--primary-h)}
+.act-btn.sec{background:transparent;border:1px solid var(--border);color:var(--text)}
+.act-btn.sec:hover{background:var(--border)}
+.preview-wrap{display:none;margin-top:.75rem;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.preview-wrap.show{display:block}
+.preview-wrap iframe{width:100%;height:500px;border:none;background:#fff}
+.info{font-size:.85rem;color:var(--muted);line-height:1.6}
+.info h3{color:var(--text);margin:1rem 0 .3rem;font-size:.95rem}
+.info code{background:var(--bg);padding:.1rem .35rem;border-radius:4px;font-size:.8rem}
+.info ul{margin:.5rem 0 .5rem 1.2rem}
+.info li{margin-bottom:.3rem}
+footer{margin-top:2rem;text-align:center;font-size:.8rem;color:var(--muted)}
+footer a{color:var(--primary);text-decoration:none}
+footer a:hover{text-decoration:underline}
+@media(max-width:500px){h1{font-size:1.3rem}.link-row{flex-direction:column}.link-input{width:100%}.copy-btn{width:100%}.preview-wrap iframe{height:350px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🔗 WPS Link Bypass</h1>
+<p class="tagline">Paste link share WPS yang minta install aplikasi.<br>Dapatkan link langsung yang bisa dibuka di browser mana saja.</p>
+
+<div class="card">
+<label for="urls">Link WPS yang kamu terima</label>
+<textarea id="urls" placeholder="Paste link WPS di sini...&#10;Bisa lebih dari satu (satu per baris)&#10;&#10;Contoh:&#10;https://ap.wps.com/cms/docs/d/cbPaejZVD597hxKT?lg=id-ID"></textarea>
+<div id="err" class="error"></div>
+<button class="btn" onclick="doConvert()">🔄 Konversi Link</button>
+</div>
+
+<div id="results" class="result"></div>
+
+<div class="card info">
+<h3>Kenapa link WPS minta install aplikasi?</h3>
+<p>Link share WPS seperti <code>ap.wps.com/cms/docs/d/...</code> sengaja diarahkan ke halaman promosi yang memaksa install WPS Office. Padahal file-nya bisa dibuka langsung di browser.</p>
+
+<h3>Cara kerja tools ini</h3>
+<ul>
+<li>Link WPS punya 2 versi: <code>/cms/docs/d/{SID}</code> (iklan) dan <code>/l/{SID}</code> (viewer langsung)</li>
+<li>Tools ini mengekstrak SID dari URL kamu, lalu membuat link viewer langsung</li>
+<li>Semua proses terjadi di browser — tidak ada data yang dikirim ke server manapun</li>
+</ul>
+
+<h3>Mau simpan sebagai PDF?</h3>
+<p>Setelah file terbuka di browser, tekan <code>Ctrl+P</code> → pilih <b>"Save as PDF"</b> → selesai. Tanpa install WPS.</p>
+</div>
+
+<footer>
+Dibuat dari frustrasi terhadap link WPS yang menyesatkan.<br>
+100% client-side. Tidak mengumpulkan data apapun.
+</footer>
+
+</div>
+
+<script>
+const PATTERNS=[
+/ap\.wps\.com\/cms\/docs\/d\/([A-Za-z0-9_-]+)/,
+/www\.kdocs\.cn\/view\/doc\/([A-Za-z0-9_-]+)/,
+/ap\.wps\.com\/l\/([A-Za-z0-9_-]+)/,
+/www\.kdocs\.cn\/l\/([A-Za-z0-9_-]+)/,
+/[?&]sid=([A-Za-z0-9_-]{10,})/
+];
+
+function parse(raw){
+const u=raw.trim();
+if(!u||u.startsWith('#'))return null;
+for(const p of PATTERNS){
+const m=u.match(p);
+if(m)return{sid:m[1],raw:u};
+}
+return null;
+}
+
+function getFn(raw){
+const m=raw.match(/[?&]fn=([^&#]+)/);
+return m?decodeURIComponent(m[1]):null;
+}
+
+function getHost(raw){
+if(raw.includes('kdocs.cn'))return'https://www.kdocs.cn';
+return'https://ap.wps.com';
+}
+
+function doConvert(){
+const raw=document.getElementById('urls').value;
+const errEl=document.getElementById('err');
+const resEl=document.getElementById('results');
+errEl.style.display='none';
+errEl.textContent='';
+resEl.innerHTML='';
+resEl.classList.remove('show');
+
+const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+if(!lines.length){errEl.textContent='Paste link WPS dulu.';errEl.style.display='block';return;}
+
+const parsed=lines.map(parse);
+const good=[];const bad=[];
+parsed.forEach((p,i)=>{
+if(p)good.push({...p,fn:getFn(lines[i])});
+else bad.push(lines[i]);
+});
+
+if(bad.length){
+errEl.textContent='Tidak dikenali: '+bad.map(b=>b.substring(0,60)).join(', ');
+errEl.style.display='block';
+}
+if(!good.length)return;
+
+let html='';
+good.forEach((g,i)=>{
+const host=getHost(g.raw);
+const direct=host+'/l/'+g.sid;
+const viewer=host+'/cms/module/common/preview/?sid='+g.sid+(g.fn?'&fn='+encodeURIComponent(g.fn):'');
+html+='<div class="link-card">'
++'<h3><span class="badge badge-ok">✓ Berhasil</span>'+(g.fn?'<span class="fname">'+esc(g.fn)+'</span>':'')+'</h3>'
++'<div style="font-size:.75rem;color:var(--muted)">SID: <code>'+g.sid+'</code></div>'
++'<div style="margin-top:.75rem;font-weight:600;font-size:.85rem">Preview Langsung</div>'
++'<div class="link-row">'
++'<input class="link-input" id="u'+i+'" value="'+direct+'" readonly onclick="this.select()">'
++'<button class="copy-btn" onclick="cp(\'u'+i+'\',this)">Copy</button>'
++'</div>'
++'<div style="margin-top:.5rem;font-weight:600;font-size:.85rem">Viewer Detail</div>'
++'<div class="link-row">'
++'<input class="link-input" id="v'+i+'" value="'+viewer+'" readonly onclick="this.select()">'
++'<button class="copy-btn" onclick="cp(\'v'+i+'\',this)">Copy</button>'
++'</div>'
++'<div class="actions">'
++'<a class="act-btn" href="'+direct+'" target="_blank" rel="noopener">↗ Buka Preview</a>'
++'<button class="act-btn sec" onclick="toggleIframe(\'pf'+i+'\',\''+direct+'\')">👁️ Preview di Sini</button>'
++'</div>'
++'<div class="preview-wrap" id="pf'+i+'_wrap"><iframe id="pf'+i+'"></iframe></div>'
++'</div>';
+});
+
+resEl.innerHTML=html;
+resEl.classList.add('show');
+}
+
+function cp(id,btn){
+const el=document.getElementById(id);
+navigator.clipboard.writeText(el.value).then(function(){
+btn.textContent='Copied!';btn.classList.add('done');
+setTimeout(function(){btn.textContent='Copy';btn.classList.remove('done');},1500);
+}).catch(function(){el.select();document.execCommand('copy');});
+}
+
+function toggleIframe(id,url){
+const wrap=document.getElementById(id+'_wrap');
+const frame=document.getElementById(id);
+if(wrap.classList.contains('show')){wrap.classList.remove('show');frame.src='';}
+else{frame.src=url;wrap.classList.add('show');}
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
