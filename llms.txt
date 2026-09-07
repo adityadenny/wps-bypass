@@ -1,0 +1,39 @@
+# WPS Link Bypass
+
+> A free, open-source tool that converts WPS Office share links into direct browser-viewable links. No installation, no account, no tracking.
+
+## What it does
+
+WPS Office share links (from ap.wps.com and kdocs.cn) redirect users to an "install WPS Office" promotion page instead of opening the shared file. This tool extracts the document identifier (SID) from the share URL and constructs a direct viewer link that opens the file in any browser.
+
+## How to use
+
+1. Paste one or more WPS share links into the text field
+2. Click "Convert Links"
+3. Copy the generated direct link or open it inline
+
+## Supported link formats
+
+- `https://ap.wps.com/cms/docs/d/{SID}` — WPS international share links
+- `https://www.kdocs.cn/view/doc/{SID}` — KDocs Chinese share links
+- `https://ap.wps.com/l/{SID}` — Already-converted short links
+
+## URL transformation
+
+Input:  `https://ap.wps.com/cms/docs/d/cbPaejZVD597hxKT?lg=id-ID&fn=file.pdf`
+Output: `https://ap.wps.com/l/cbPaejZVD597hxKT`
+
+The SID is the unique document identifier. Both URLs point to the same file. The first is gated behind an app install prompt. The second opens directly.
+
+## Privacy
+
+All processing happens in the browser (client-side JavaScript). No data is sent to any server. No cookies, analytics, or tracking scripts are used. The source code is a single HTML file that can be audited in minutes.
+
+## Deployment
+
+Single HTML file. No build step. No dependencies. Host on GitHub Pages, Netlify, Vercel, or any static server.
+
+## Links
+
+- Source code: https://github.com/adityadenny/wps-bypass
+- Live tool: https://adityadenny.github.io/wps-bypass/

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adityadenny.github.io/wps-bypass/sitemap.xml

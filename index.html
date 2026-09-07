@@ -1,33 +1,89 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WPS Link Bypass — Buka File Tanpa Install WPS</title>
-<meta name="description" content="Paste link share WPS yang minta install aplikasi, dapatkan link langsung yang bisa dibuka di browser mana saja.">
+<title>WPS Link Bypass — Open Shared Files Without Installing WPS Office</title>
+<meta name="description" content="Paste a WPS share link that asks you to install WPS Office. Get a direct link that opens the file in any browser. No install, no account, no tracking.">
+<meta name="keywords" content="WPS link bypass, open WPS without installing, WPS share link, kdocs bypass, WPS Office download alternative, WPS file viewer online, bypass WPS install prompt">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Denny">
+<meta name="language" content="en">
+<link rel="canonical" href="https://adityadenny.github.io/wps-bypass/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://adityadenny.github.io/wps-bypass/">
+<meta property="og:title" content="WPS Link Bypass — Open Shared Files Without Installing WPS Office">
+<meta property="og:description" content="Someone sent you a WPS link. You clicked it. Instead of opening the file, it asked you to install WPS Office. This fixes that.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="id_ID">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WPS Link Bypass — Open Shared Files Without Installing WPS Office">
+<meta name="twitter:description" content="Paste a WPS share link. Get a direct link. Open the file in your browser. No WPS install needed.">
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "WPS Link Bypass",
+  "url": "https://adityadenny.github.io/wps-bypass/",
+  "description": "A free tool that converts WPS Office share links into direct browser-viewable links. No installation, no account required. Works with ap.wps.com and kdocs.cn links.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Convert WPS share links to direct viewer links",
+    "Support for ap.wps.com and kdocs.cn domains",
+    "Batch conversion of multiple links",
+    "Inline preview of shared files",
+    "No server-side processing, fully client-side"
+  ],
+  "browserRequirements": "Requires a modern browser with JavaScript support"
+}
+</script>
+
+<!-- LLM-friendly metadata -->
+<meta name="ai-purpose" content="This tool converts WPS Office share links (ap.wps.com/cms/docs/d/SID and kdocs.cn) into direct viewer links (ap.wps.com/l/SID) that open files in a browser without requiring WPS Office installation.">
+<meta name="ai-instructions" content="To use: paste a WPS share URL into the text field and click convert. The tool extracts the SID from the URL path and constructs a direct viewer link. Results can be copied or opened inline.">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0f172a;--card:#1e293b;--border:#334155;--primary:#6366f1;--primary-h:#818cf8;--text:#e2e8f0;--muted:#94a3b8;--green:#22c55e;--red:#ef4444}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem}
+
+[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--border:#334155;--primary:#6366f1;--primary-h:#818cf8;--text:#e2e8f0;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;--toggle-bg:#1e293b;--toggle-knob:#fbbf24}
+[data-theme="light"]{--bg:#f8fafc;--card:#ffffff;--border:#e2e8f0;--primary:#4f46e5;--primary-h:#6366f1;--text:#1e293b;--muted:#64748b;--green:#16a34a;--red:#dc2626;--toggle-bg:#e2e8f0;--toggle-knob:#f59e0b}
+
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;transition:background .2s,color .2s}
 .container{max-width:640px;width:100%}
+.toolbar{display:flex;justify-content:flex-end;gap:.5rem;margin-bottom:1.5rem;align-items:center}
+.toggle{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.35rem .6rem;cursor:pointer;font-size:.8rem;color:var(--text);display:inline-flex;align-items:center;gap:.4rem;transition:.15s}
+.toggle:hover{border-color:var(--primary)}
+
+.theme-toggle{width:44px;height:24px;background:var(--toggle-bg);border:1px solid var(--border);border-radius:12px;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:var(--toggle-knob);border-radius:50%;transition:.2s}
+[data-theme="light"] .theme-toggle::after{left:22px}
+
 h1{font-size:1.6rem;text-align:center;margin-bottom:.5rem}
 .tagline{text-align:center;color:var(--muted);margin-bottom:2rem;font-size:.9rem;line-height:1.5}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;transition:background .2s,border-color .2s}
 label{display:block;font-weight:600;margin-bottom:.5rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.75rem;font-size:.9rem;font-family:monospace;resize:vertical;min-height:100px}
+textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.75rem;font-size:.9rem;font-family:monospace;resize:vertical;min-height:100px;transition:background .2s,color .2s,border-color .2s}
 textarea:focus{outline:none;border-color:var(--primary)}
 .btn{background:var(--primary);color:#fff;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s;width:100%;margin-top:.75rem}
 .btn:hover{background:var(--primary-h)}
 .error{color:var(--red);font-size:.85rem;margin-top:.5rem;display:none}
 .result{display:none;margin-top:1.5rem}
 .result.show{display:block}
-.link-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.link-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem;transition:background .2s,border-color .2s}
 .link-card h3{font-size:.9rem;margin-bottom:.3rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
 .badge{font-size:.7rem;padding:.15rem .5rem;border-radius:9999px;font-weight:600}
 .badge-ok{background:#16532d;color:var(--green)}
 .fname{color:var(--green);font-family:monospace;font-size:.8rem;word-break:break-all}
 .link-row{display:flex;gap:.5rem;margin-top:.5rem;align-items:center}
-.link-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--green);padding:.5rem .6rem;font-size:.8rem;font-family:monospace;overflow:hidden;text-overflow:ellipsis}
+.link-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--green);padding:.5rem .6rem;font-size:.8rem;font-family:monospace;overflow:hidden;text-overflow:ellipsis;transition:background .2s,border-color .2s}
 .copy-btn{background:var(--border);color:var(--text);border:none;padding:.5rem .75rem;border-radius:6px;cursor:pointer;font-size:.8rem;white-space:nowrap;transition:.15s}
 .copy-btn:hover{background:var(--primary)}
 .copy-btn.done{background:var(--green);color:#fff}
@@ -40,55 +96,165 @@ textarea:focus{outline:none;border-color:var(--primary)}
 .preview-wrap.show{display:block}
 .preview-wrap iframe{width:100%;height:500px;border:none;background:#fff}
 .info{font-size:.85rem;color:var(--muted);line-height:1.6}
-.info h3{color:var(--text);margin:1rem 0 .3rem;font-size:.95rem}
+.info h2{color:var(--text);margin:1rem 0 .3rem;font-size:.95rem}
 .info code{background:var(--bg);padding:.1rem .35rem;border-radius:4px;font-size:.8rem}
 .info ul{margin:.5rem 0 .5rem 1.2rem}
 .info li{margin-bottom:.3rem}
 footer{margin-top:2rem;text-align:center;font-size:.8rem;color:var(--muted)}
 footer a{color:var(--primary);text-decoration:none}
 footer a:hover{text-decoration:underline}
-@media(max-width:500px){h1{font-size:1.3rem}.link-row{flex-direction:column}.link-input{width:100%}.copy-btn{width:100%}.preview-wrap iframe{height:350px}}
+@media(max-width:500px){h1{font-size:1.3rem}.link-row{flex-direction:column}.link-input{width:100%}.copy-btn{width:100%}.preview-wrap iframe{height:350px}.toolbar{flex-wrap:wrap;justify-content:center}}
 </style>
 </head>
 <body>
-<div class="container">
+<header class="container">
+<nav class="toolbar" aria-label="Settings">
+<button class="toggle" onclick="toggleLang()" aria-label="Switch language" id="langBtn">EN / ID</button>
+<div class="theme-toggle" onclick="toggleTheme()" role="switch" aria-checked="true" aria-label="Toggle dark/light mode" title="Toggle theme"></div>
+</nav>
+</header>
 
-<h1>🔗 WPS Link Bypass</h1>
-<p class="tagline">Paste link share WPS yang minta install aplikasi.<br>Dapatkan link langsung yang bisa dibuka di browser mana saja.</p>
+<main class="container">
+<h1 id="pageTitle">WPS Link Bypass</h1>
+<p class="tagline" id="tagline">Paste a WPS share link that asks you to install the app. Get a direct link that opens the file in your browser.</p>
 
-<div class="card">
-<label for="urls">Link WPS yang kamu terima</label>
-<textarea id="urls" placeholder="Paste link WPS di sini...&#10;Bisa lebih dari satu (satu per baris)&#10;&#10;Contoh:&#10;https://ap.wps.com/cms/docs/d/cbPaejZVD597hxKT?lg=id-ID"></textarea>
-<div id="err" class="error"></div>
-<button class="btn" onclick="doConvert()">🔄 Konversi Link</button>
-</div>
+<section class="card">
+<label for="urls" id="inputLabel">WPS share link</label>
+<textarea id="urls" placeholder="Paste WPS links here...&#10;One per line for batch conversion&#10;&#10;Example:&#10;https://ap.wps.com/cms/docs/d/cbPaejZVD597hxKT?lg=id-ID"></textarea>
+<div id="err" class="error" role="alert"></div>
+<button class="btn" onclick="doConvert()" id="convertBtn">Convert Links</button>
+</section>
 
-<div id="results" class="result"></div>
+<section id="results" class="result" aria-live="polite"></section>
 
-<div class="card info">
-<h3>Kenapa link WPS minta install aplikasi?</h3>
-<p>Link share WPS seperti <code>ap.wps.com/cms/docs/d/...</code> sengaja diarahkan ke halaman promosi yang memaksa install WPS Office. Padahal file-nya bisa dibuka langsung di browser.</p>
+<section class="card info" id="infoSection">
+<h2 id="whyTitle">Why does WPS make you install an app?</h2>
+<p id="whyText">WPS share links like <code>ap.wps.com/cms/docs/d/...</code> redirect to a promotion page that forces you to install WPS Office. The file itself can be opened directly in any browser.</p>
 
-<h3>Cara kerja tools ini</h3>
+<h2 id="howTitle">How this tool works</h2>
 <ul>
-<li>Link WPS punya 2 versi: <code>/cms/docs/d/{SID}</code> (iklan) dan <code>/l/{SID}</code> (viewer langsung)</li>
-<li>Tools ini mengekstrak SID dari URL kamu, lalu membuat link viewer langsung</li>
-<li>Semua proses terjadi di browser — tidak ada data yang dikirim ke server manapun</li>
+<li id="how1">WPS links have two forms: <code>/cms/docs/d/{SID}</code> (install prompt) and <code>/l/{SID}</code> (direct viewer)</li>
+<li id="how2">This tool extracts the SID from your URL and builds the direct viewer link</li>
+<li id="how3">Everything runs in your browser. No data is sent to any server.</li>
 </ul>
 
-<h3>Mau simpan sebagai PDF?</h3>
-<p>Setelah file terbuka di browser, tekan <code>Ctrl+P</code> → pilih <b>"Save as PDF"</b> → selesai. Tanpa install WPS.</p>
-</div>
+<h2 id="saveTitle">Want to save as PDF?</h2>
+<p id="saveText">After the file opens in your browser, press <code>Ctrl+P</code>, select <b>"Save as PDF"</b>, done. No WPS installed.</p>
+</section>
 
 <footer>
-Dibuat dari frustrasi terhadap link WPS yang menyesatkan.<br>
-100% client-side. Tidak mengumpulkan data apapun.
+<span id="footerLine">Built from frustration with misleading WPS links. 100% client-side. No data collected.</span>
 </footer>
-
-</div>
+</main>
 
 <script>
-const PATTERNS=[
+// === i18n ===
+var currentLang='en';
+var T={
+  en:{
+    title:'WPS Link Bypass',
+    tagline:'Paste a WPS share link that asks you to install the app. Get a direct link that opens the file in your browser.',
+    inputLabel:'WPS share link',
+    placeholder:'Paste WPS links here...\nOne per line for batch conversion\n\nExample:\nhttps://ap.wps.com/cms/docs/d/cbPaejZVD597hxKT?lg=id-ID',
+    convertBtn:'Convert Links',
+    whyTitle:'Why does WPS make you install an app?',
+    whyText:'WPS share links like <code>ap.wps.com/cms/docs/d/...</code> redirect to a promotion page that forces you to install WPS Office. The file itself can be opened directly in any browser.',
+    howTitle:'How this tool works',
+    how1:'WPS links have two forms: <code>/cms/docs/d/{SID}</code> (install prompt) and <code>/l/{SID}</code> (direct viewer)',
+    how2:'This tool extracts the SID from your URL and builds the direct viewer link',
+    how3:'Everything runs in your browser. No data is sent to any server.',
+    saveTitle:'Want to save as PDF?',
+    saveText:'After the file opens in your browser, press <code>Ctrl+P</code>, select <b>"Save as PDF"</b>, done. No WPS installed.',
+    footer:'Built from frustration with misleading WPS links. 100% client-side. No data collected.',
+    errEmpty:'Paste a WPS link first.',
+    errUnknown:'Not recognized: ',
+    success:'Converted',
+    preview:'Direct Preview',
+    viewer:'Viewer Detail',
+    openPreview:'Open Preview',
+    previewHere:'Preview Here',
+    copy:'Copy',
+    copied:'Copied!',
+    langBtn:'EN / ID'
+  },
+  id:{
+    title:'WPS Link Bypass',
+    tagline:'Paste link share WPS yang minta install aplikasi. Dapatkan link langsung yang bisa dibuka di browser.',
+    inputLabel:'Link WPS yang kamu terima',
+    placeholder:'Paste link WPS di sini...\nBisa lebih dari satu (satu per baris)\n\nContoh:\nhttps://ap.wps.com/cms/docs/d/cbPaejZVD597hxKT?lg=id-ID',
+    convertBtn:'Konversi Link',
+    whyTitle:'Kenapa link WPS minta install aplikasi?',
+    whyText:'Link share WPS seperti <code>ap.wps.com/cms/docs/d/...</code> sengaja diarahkan ke halaman promosi yang memaksa install WPS Office. Padahal file-nya bisa dibuka langsung di browser.',
+    howTitle:'Cara kerja tools ini',
+    how1:'Link WPS punya 2 versi: <code>/cms/docs/d/{SID}</code> (iklan) dan <code>/l/{SID}</code> (viewer langsung)',
+    how2:'Tools ini mengekstrak SID dari URL kamu, lalu membuat link viewer langsung',
+    how3:'Semua proses terjadi di browser. Tidak ada data yang dikirim ke server.',
+    saveTitle:'Mau simpan sebagai PDF?',
+    saveText:'Setelah file terbuka di browser, tekan <code>Ctrl+P</code>, pilih <b>"Save as PDF"</b>, selesai. Tanpa install WPS.',
+    footer:'Dibuat dari frustrasi terhadap link WPS yang menyesatkan. 100% client-side. Tidak mengumpulkan data apapun.',
+    errEmpty:'Paste link WPS dulu.',
+    errUnknown:'Tidak dikenali: ',
+    success:'Berhasil',
+    preview:'Preview Langsung',
+    viewer:'Viewer Detail',
+    openPreview:'Buka Preview',
+    previewHere:'Preview di Sini',
+    copy:'Copy',
+    copied:'Copied!',
+    langBtn:'ID / EN'
+  }
+};
+
+function t(k){return T[currentLang][k]||T.en[k]||k;}
+
+function applyLang(){
+  document.documentElement.lang=currentLang;
+  document.getElementById('pageTitle').textContent=t('title');
+  document.getElementById('tagline').innerHTML=t('tagline');
+  document.getElementById('inputLabel').textContent=t('inputLabel');
+  document.getElementById('urls').placeholder=t('placeholder');
+  document.getElementById('convertBtn').textContent=t('convertBtn');
+  document.getElementById('whyTitle').textContent=t('whyTitle');
+  document.getElementById('whyText').innerHTML=t('whyText');
+  document.getElementById('howTitle').textContent=t('howTitle');
+  document.getElementById('how1').innerHTML=t('how1');
+  document.getElementById('how2').innerHTML=t('how2');
+  document.getElementById('how3').innerHTML=t('how3');
+  document.getElementById('saveTitle').textContent=t('saveTitle');
+  document.getElementById('saveText').innerHTML=t('saveText');
+  document.getElementById('footerLine').textContent=t('footer');
+  document.getElementById('langBtn').textContent=t('langBtn');
+  document.title=currentLang==='id'?'WPS Link Bypass — Buka File Tanpa Install WPS':'WPS Link Bypass — Open Shared Files Without Installing WPS Office';
+}
+
+function toggleLang(){
+  currentLang=currentLang==='en'?'id':'en';
+  localStorage.setItem('wpsb_lang',currentLang);
+  applyLang();
+}
+
+// === Theme ===
+function setTheme(th){
+  document.documentElement.setAttribute('data-theme',th);
+  localStorage.setItem('wpsb_theme',th);
+  var sw=document.querySelector('.theme-toggle');
+  if(sw)sw.setAttribute('aria-checked',th==='dark'?'true':'false');
+}
+function toggleTheme(){
+  var cur=document.documentElement.getAttribute('data-theme');
+  setTheme(cur==='dark'?'light':'dark');
+}
+
+// === Init ===
+(function(){
+  var saved=localStorage.getItem('wpsb_theme');
+  if(saved)setTheme(saved);
+  var lang=localStorage.getItem('wpsb_lang');
+  if(lang&&T[lang]){currentLang=lang;applyLang();}
+})();
+
+// === Core ===
+var PATTERNS=[
 /ap\.wps\.com\/cms\/docs\/d\/([A-Za-z0-9_-]+)/,
 /www\.kdocs\.cn\/view\/doc\/([A-Za-z0-9_-]+)/,
 /ap\.wps\.com\/l\/([A-Za-z0-9_-]+)/,
@@ -97,96 +263,74 @@ const PATTERNS=[
 ];
 
 function parse(raw){
-const u=raw.trim();
+var u=raw.trim();
 if(!u||u.startsWith('#'))return null;
-for(const p of PATTERNS){
-const m=u.match(p);
-if(m)return{sid:m[1],raw:u};
-}
+for(var i=0;i<PATTERNS.length;i++){var m=u.match(PATTERNS[i]);if(m)return{sid:m[1],raw:u};}
 return null;
 }
-
-function getFn(raw){
-const m=raw.match(/[?&]fn=([^&#]+)/);
-return m?decodeURIComponent(m[1]):null;
-}
-
-function getHost(raw){
-if(raw.includes('kdocs.cn'))return'https://www.kdocs.cn';
-return'https://ap.wps.com';
-}
+function getFn(raw){var m=raw.match(/[?&]fn=([^&#]+)/);return m?decodeURIComponent(m[1]):null;}
+function getHost(raw){return raw.includes('kdocs.cn')?'https://www.kdocs.cn':'https://ap.wps.com';}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function doConvert(){
-const raw=document.getElementById('urls').value;
-const errEl=document.getElementById('err');
-const resEl=document.getElementById('results');
-errEl.style.display='none';
-errEl.textContent='';
-resEl.innerHTML='';
-resEl.classList.remove('show');
+var raw=document.getElementById('urls').value;
+var errEl=document.getElementById('err');
+var resEl=document.getElementById('results');
+errEl.style.display='none';errEl.textContent='';
+resEl.innerHTML='';resEl.classList.remove('show');
 
-const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
-if(!lines.length){errEl.textContent='Paste link WPS dulu.';errEl.style.display='block';return;}
+var lines=raw.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+if(!lines.length){errEl.textContent=t('errEmpty');errEl.style.display='block';return;}
 
-const parsed=lines.map(parse);
-const good=[];const bad=[];
-parsed.forEach((p,i)=>{
-if(p)good.push({...p,fn:getFn(lines[i])});
-else bad.push(lines[i]);
-});
+var good=[];var bad=[];
+lines.forEach(function(line,i){var p=parse(line);if(p)good.push({sid:p.sid,raw:line,fn:getFn(line)});else bad.push(line);});
 
-if(bad.length){
-errEl.textContent='Tidak dikenali: '+bad.map(b=>b.substring(0,60)).join(', ');
-errEl.style.display='block';
-}
+if(bad.length){errEl.textContent=t('errUnknown')+bad.map(function(b){return b.substring(0,60);}).join(', ');errEl.style.display='block';}
 if(!good.length)return;
 
-let html='';
-good.forEach((g,i)=>{
-const host=getHost(g.raw);
-const direct=host+'/l/'+g.sid;
-const viewer=host+'/cms/module/common/preview/?sid='+g.sid+(g.fn?'&fn='+encodeURIComponent(g.fn):'');
-html+='<div class="link-card">'
-+'<h3><span class="badge badge-ok">✓ Berhasil</span>'+(g.fn?'<span class="fname">'+esc(g.fn)+'</span>':'')+'</h3>'
+var html='';
+good.forEach(function(g,i){
+var host=getHost(g.raw);
+var direct=host+'/l/'+g.sid;
+var viewer=host+'/cms/module/common/preview/?sid='+g.sid+(g.fn?'&fn='+encodeURIComponent(g.fn):'');
+html+='<article class="link-card">'
++'<h3><span class="badge badge-ok">'+t('success')+'</span>'+(g.fn?'<span class="fname">'+esc(g.fn)+'</span>':'')+'</h3>'
 +'<div style="font-size:.75rem;color:var(--muted)">SID: <code>'+g.sid+'</code></div>'
-+'<div style="margin-top:.75rem;font-weight:600;font-size:.85rem">Preview Langsung</div>'
++'<div style="margin-top:.75rem;font-weight:600;font-size:.85rem">'+t('preview')+'</div>'
 +'<div class="link-row">'
 +'<input class="link-input" id="u'+i+'" value="'+direct+'" readonly onclick="this.select()">'
-+'<button class="copy-btn" onclick="cp(\'u'+i+'\',this)">Copy</button>'
++'<button class="copy-btn" onclick="cp(\'u'+i+'\',this)">'+t('copy')+'</button>'
 +'</div>'
-+'<div style="margin-top:.5rem;font-weight:600;font-size:.85rem">Viewer Detail</div>'
++'<div style="margin-top:.5rem;font-weight:600;font-size:.85rem">'+t('viewer')+'</div>'
 +'<div class="link-row">'
 +'<input class="link-input" id="v'+i+'" value="'+viewer+'" readonly onclick="this.select()">'
-+'<button class="copy-btn" onclick="cp(\'v'+i+'\',this)">Copy</button>'
++'<button class="copy-btn" onclick="cp(\'v'+i+'\',this)">'+t('copy')+'</button>'
 +'</div>'
 +'<div class="actions">'
-+'<a class="act-btn" href="'+direct+'" target="_blank" rel="noopener">↗ Buka Preview</a>'
-+'<button class="act-btn sec" onclick="toggleIframe(\'pf'+i+'\',\''+direct+'\')">👁️ Preview di Sini</button>'
++'<a class="act-btn" href="'+direct+'" target="_blank" rel="noopener">'+t('openPreview')+'</a>'
++'<button class="act-btn sec" onclick="toggleIframe(\'pf'+i+'\',\''+direct+'\')">'+t('previewHere')+'</button>'
 +'</div>'
-+'<div class="preview-wrap" id="pf'+i+'_wrap"><iframe id="pf'+i+'"></iframe></div>'
-+'</div>';
++'<div class="preview-wrap" id="pf'+i+'_wrap"><iframe id="pf'+i+'" loading="lazy"></iframe></div>'
++'</article>';
 });
-
 resEl.innerHTML=html;
 resEl.classList.add('show');
 }
 
 function cp(id,btn){
-const el=document.getElementById(id);
+var el=document.getElementById(id);
 navigator.clipboard.writeText(el.value).then(function(){
-btn.textContent='Copied!';btn.classList.add('done');
-setTimeout(function(){btn.textContent='Copy';btn.classList.remove('done');},1500);
+btn.textContent=t('copied');btn.classList.add('done');
+setTimeout(function(){btn.textContent=t('copy');btn.classList.remove('done');},1500);
 }).catch(function(){el.select();document.execCommand('copy');});
 }
 
 function toggleIframe(id,url){
-const wrap=document.getElementById(id+'_wrap');
-const frame=document.getElementById(id);
+var wrap=document.getElementById(id+'_wrap');
+var frame=document.getElementById(id);
 if(wrap.classList.contains('show')){wrap.classList.remove('show');frame.src='';}
 else{frame.src=url;wrap.classList.add('show');}
 }
-
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
 </body>
 </html>
